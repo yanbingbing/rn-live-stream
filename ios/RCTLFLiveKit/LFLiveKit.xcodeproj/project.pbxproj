@@ -42,7 +42,6 @@
 		956973611D5DCC2100FF600F /* LFGPUImageBeautyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 956971BE1D5DCC2000FF600F /* LFGPUImageBeautyFilter.m */; };
 		956973621D5DCC2100FF600F /* LFGPUImageEmptyFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 956971BF1D5DCC2000FF600F /* LFGPUImageEmptyFilter.h */; };
 		956973631D5DCC2100FF600F /* LFGPUImageEmptyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 956971C01D5DCC2000FF600F /* LFGPUImageEmptyFilter.m */; };
-		956973641D5DCC2100FF600F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 956971C11D5DCC2000FF600F /* Info.plist */; };
 		956973651D5DCC2100FF600F /* LFLiveKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 956971C21D5DCC2000FF600F /* LFLiveKit.h */; };
 		956973661D5DCC2100FF600F /* LFLiveSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 956971C31D5DCC2000FF600F /* LFLiveSession.h */; };
 		956973671D5DCC2100FF600F /* LFLiveSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 956971C41D5DCC2000FF600F /* LFLiveSession.m */; };
@@ -1700,7 +1699,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956973641D5DCC2100FF600F /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1932,8 +1930,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1980,8 +1980,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -2011,6 +2013,7 @@
 		84001F9F1D0015D10026C63F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2044,6 +2047,7 @@
 		84001FA01D0015D10026C63F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

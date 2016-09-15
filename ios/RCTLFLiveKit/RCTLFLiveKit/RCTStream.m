@@ -322,7 +322,7 @@
 }
 
 - (void) setMirror:(BOOL) mirror {
-    if (mirrot != _mirror) {
+    if (mirror != _mirror) {
         _mirror = mirror;
         [self.session setMirror:mirror];
     }
