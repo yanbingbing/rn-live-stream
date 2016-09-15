@@ -2,13 +2,9 @@
 //  RCTStream.m
 //  RCTLFLiveKit
 //
-//  Created by 권오빈 on 2016. 8. 10..
-//  Copyright © 2016년 권오빈. All rights reserved.
-//
 
 #import "RCTBridge.h"
 #import "LFLiveSession.h"
-//#import <LFLiveKit/LFLiveSession.h>
 #import "RCTStream.h"
 #import "RCTStreamManager.h"
 #import "RCTLog.h"
@@ -22,7 +18,6 @@
 @property (nonatomic, weak) RCTBridge *bridge;
 @property (nonatomic, strong) LFLiveSession *session;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UIButton *startLiveButton;
 
 @end
 
@@ -31,6 +26,8 @@
     bool _cameraFronted;
     NSString *_url;
     bool _landscape;
+    bool _mirror;
+    bool _beautyFace;
 }
 
 - (void)insertReactSubview:(UIView *)view atIndex:(NSInteger)atIndex
@@ -48,11 +45,13 @@
 - (void)removeFromSuperview
 {
     __weak typeof(self) _self = self;
-    if(!_started){
+    if (!_started) {
         [_self.session stopLive];
     }
     [super removeFromSuperview];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIDeviceOrientationDidChangeNotification
+                                                  object:nil];
     
     //[UIApplication sharedApplication].idleTimerDisabled = _previousIdleTimerDisabled;
 }
@@ -61,24 +60,14 @@
     if ((self = [super init])) {
         _started = NO;
         _cameraFronted = YES;
+        _mirror = NO;
+        _beautyFace = NO;
         self.manager = manager;
         self.bridge = bridge;
         self.backgroundColor = [UIColor clearColor];
         [self requestAccessForVideo];
         [self requestAccessForAudio];
         [self addSubview:self.containerView];
-//
-//        [self setTranslatesAutoresizingMaskIntoConstraints:NO];
-//        
-//        NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0];
-//        NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0];
-//        NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0];
-//        NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0];
-//        
-//        NSArray *constraints = [NSArray arrayWithObjects:centerX, centerY,width,height, nil];
-//        [self addConstraints: constraints];
-        
-        //[self.containerView addSubview:self.startLiveButton];
     }
     return self;
 }
@@ -161,17 +150,15 @@
 }
 
 #pragma mark -- Getter Setter
-- (LFLiveSession *)session {
-    NSLog(@"Session 호출");
+- (LFLiveSession *) session {
     if (!_session) {
-        NSLog(@"Session 생성");
-        /**      发现大家有不会用横屏的请注意啦，横屏需要在ViewController  supportedInterfaceOrientations修改方向  默认竖屏  ****/
-        /**      发现大家有不会用横屏的请注意啦，横屏需要在ViewController  supportedInterfaceOrientations修改方向  默认竖屏  ****/
-        /**      发现大家有不会用横屏的请注意啦，横屏需要在ViewController  supportedInterfaceOrientations修改方向  默认竖屏  ****/
+        NSLog(@"Session init");
+        /** 发现大家有不会用横屏的请注意啦，横屏需要在ViewController  supportedInterfaceOrientations修改方向  默认竖屏  ****/
         
         
         /***   默认分辨率368 ＊ 640  音频：44.1 iphone6以上48  双声道  方向竖屏 ***/
-        _session = [[LFLiveSession alloc] initWithAudioConfiguration:[LFLiveAudioConfiguration defaultConfiguration] videoConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Low3 landscape:_landscape]];
+        _session = [[LFLiveSession alloc] initWithAudioConfiguration:[LFLiveAudioConfiguration defaultConfiguration]
+                                                  videoConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Low3 landscape:_landscape]];
         
         /**    自己定制单声道  */
         /*
@@ -259,19 +246,12 @@
         _session.delegate = self;
         _session.showDebugInfo = YES;
         _session.preView = self;
-        //_session.mirror = NO;
-
-        //        UIImageView *imageView = [[UIImageView alloc] init];
-        //        imageView.alpha = 0.8;
-        //        imageView.frame = CGRectMake(100, 100, 29, 29);
-        //        imageView.image = [UIImage imageNamed:@"ios-29x29"];
-        //        _session.warterMarkView = imageView;
-        //        
+        _session.mirror = _mirror;
     }
     return _session;
 }
 
-- (UIView *)containerView {
+- (UIView *) containerView {
     if (!_containerView) {
         _containerView = [UIView new];
         _containerView.frame = self.bounds;
@@ -281,40 +261,72 @@
     return _containerView;
 }
 
-
-- (void) setStarted:(BOOL) started{
-    __weak typeof(self) _self = self;
-    if(started != _started){
-        if(started){
-            LFLiveStreamInfo *stream = [LFLiveStreamInfo new];
-            stream.url = _url;
-            [_self.session startLive:stream];
-        }else{
-            [_self.session stopLive];
-        }
-        _started = started;
+- (void) doStart {
+    if (_started && _url != nil) {
+        LFLiveStreamInfo *stream = [LFLiveStreamInfo new];
+        stream.url = _url;
+        [self.session startLive:stream];
     }
 }
 
-- (void) setCameraFronted: (BOOL) cameraFronted{
+- (void) doStop {
+    if (!_started) {
+        [self.session stopLive];
+    }
+}
+
+
+- (void) setStarted:(BOOL) started {
     __weak typeof(self) _self = self;
-    if(cameraFronted != _cameraFronted){
-        //AVCaptureDevicePosition devicePositon = _self.session.captureDevicePosition;
-        if (cameraFronted){
+    if (started != _started) {
+        _started = started;
+        if (started) {
+            [_self doStart];
+        } else {
+            [_self doStop];
+        }
+    }
+}
+
+- (void) setUrl: (NSString *) url {
+    __weak typeof(self) _self = self;
+    if (![_url isEqualToString:url]) {
+        if (_started) {
+            [_self setStarted:(url == nil || [url length] == 0)];
+        }
+        _url = url;
+    }
+}
+
+- (void) setCameraFronted:(BOOL) cameraFronted {
+    __weak typeof(self) _self = self;
+    if (cameraFronted != _cameraFronted) {
+        if (cameraFronted) {
             _self.session.captureDevicePosition = AVCaptureDevicePositionFront;
-        }else {
+        } else {
             _self.session.captureDevicePosition = AVCaptureDevicePositionBack;
         }
         _cameraFronted = cameraFronted;
     }
 }
 
-- (void) setUrl: (NSString *) url {
-    _url = url;
-}
-
-- (void) setLandscape: (BOOL) landscape{
+- (void) setLandscape:(BOOL) landscape {
     _landscape = landscape;
 }
+
+- (void) setBeautyFace:(BOOL) beautyFace {
+    if (beautyFace != _beautyFace) {
+        [self.session setBeautyFace:beautyFace];
+        _beautyFace = beautyFace;
+    }
+}
+
+- (void) setMirror:(BOOL) mirror {
+    if (mirrot != _mirror) {
+        _mirror = mirror;
+        [self.session setMirror:mirror];
+    }
+}
+
 
 @end

@@ -1,39 +1,17 @@
-/**
- * Created by buhe on 16/4/29.
- */
 import React, {PropTypes, Component} from 'react';
 import {requireNativeComponent, Dimensions, NativeModules, View} from 'react-native';
-//
-// class Stream extends Component {
-// 	static propTypes = {
-//
-// 	};
-//
-// 	render() {
-// 		return (
-// 			<RCTStream
-// 				{...this.props}
-// 			/>
-// 		)
-// 	}
-// }
+
 const { width , height } = Dimensions.get('window');
 
 class Stream extends Component {
-	constructor(props, context){
-		super(props, context);
-		this._onReady = this._onReady.bind(this);
-		this._onPending = this._onPending.bind(this);
-		this._onStart = this._onStart.bind(this);
-		this._onError = this._onError.bind(this);
-		this._onStop = this._onStop.bind(this);
-	}
 
 	static propTypes = {
 		started: PropTypes.bool,
 		cameraFronted: PropTypes.bool,
 		url: PropTypes.string.isRequired,
 		landscape: PropTypes.bool.isRequired,
+		mirror: PropTypes.bool,
+		beautyFace: PropTypes.bool,
 
 		onReady: PropTypes.func,
 		onPending: PropTypes.func,
@@ -44,10 +22,19 @@ class Stream extends Component {
 	}
 
 	static defaultProps= {
-		cameraFronted: true
+		cameraFronted: true,
 	}
 
-	_onReady(event){
+	constructor(props, context) {
+		super(props, context);
+		this._onReady = this._onReady.bind(this);
+		this._onPending = this._onPending.bind(this);
+		this._onStart = this._onStart.bind(this);
+		this._onError = this._onError.bind(this);
+		this._onStop = this._onStop.bind(this);
+	}
+
+	_onReady(event) {
 		this.props.onReady && this.props.onReady(event.nativeEvent);
 	}
 
@@ -69,15 +56,15 @@ class Stream extends Component {
 
 	render() {
 		let style = this.props.style;
-		if(this.props.style){
-			if(this.props.landscape){
+		if (this.props.style) {
+			if (this.props.landscape) {
 				style = {
 					...this.props.style,
 					transform:[{rotate:'270deg'}],
 					width:height,
 					height:width
 				};
-			}else{
+			} else {
 				style = {
 					width: width,
 					height: height,
@@ -85,6 +72,7 @@ class Stream extends Component {
 				}
 			}
 		}
+
 		const nativeProps = {
 			onReady: this._onReady,
 			onPending: this._onPending,
