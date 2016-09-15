@@ -1,0 +1,19 @@
+.DS_Store
+
+## IDE
+.idea
+.vscode
+
+## Build generated
+build/
+
+## Other
+*.moved-aside
+*.xcuserstate
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+

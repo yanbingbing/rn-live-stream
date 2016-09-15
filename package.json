@@ -1,0 +1,28 @@
+{
+  "name": "rn-live-stream",
+  "version": "0.0.1",
+  "description": "live video stream for react-native",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanbingbing/rn-live-stream.git"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "react-native-video",
+    "react-native-stream",
+    "react-native-live-stream"
+  ],
+  "author": "onbing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yanbingbing/rn-live-stream/issues"
+  },
+  "homepage": "https://github.com/yanbingbing/rn-live-stream#readme",
+  "devDependencies": {
+    "react": "^15.3.0",
+    "react-native": "^0.30.0"
+  }
+}
